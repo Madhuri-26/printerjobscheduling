@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linked List Queue Visualizer</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2d;--panel2:#17223a;--line:#2b3a58;--text:#edf3ff;--muted:#9aaaca;--blue:#68a7ff;--cyan:#51e0d0;--pink:#ff829e;--yellow:#ffd479}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 15% 0%,#1a2d50 0,transparent 35%),var(--bg);color:var(--text);min-height:100vh}
+.wrap{max-width:1200px;margin:auto;padding:28px 20px 40px}.top{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:26px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:13px}.logo{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,var(--blue),var(--cyan));color:#071326;font-size:24px;font-weight:900;box-shadow:0 8px 30px #51e0d033}
+h1{font-size:clamp(24px,4vw,36px);margin:0;letter-spacing:-.8px}.subtitle{color:var(--muted);margin:6px 0 0;font-size:14px}
+.pill{border:1px solid #2d496a;border-radius:999px;padding:9px 13px;color:#b9d7ff;background:#101d32;font-size:12px;font-weight:700;letter-spacing:.5px}
+.hero{display:grid;grid-template-columns:1.4fr .8fr;gap:18px;margin-bottom:18px}.panel{background:linear-gradient(160deg,#141e33,#101729);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 14px 40px #00000020}
+.kicker{color:var(--cyan);text-transform:uppercase;letter-spacing:1.7px;font-size:11px;font-weight:800}.hero h2{font-size:25px;margin:9px 0 8px}.hero p{color:var(--muted);line-height:1.6;margin:0;max-width:680px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-self:stretch}.stat{background:#0c1426;border:1px solid #263653;border-radius:15px;padding:15px;display:flex;flex-direction:column;justify-content:center}.stat span{font-size:12px;color:var(--muted)}.stat strong{font-size:27px;margin-top:6px}
+.main{display:grid;grid-template-columns:340px 1fr;gap:18px}.section-title{font-size:16px;margin:0 0 17px;display:flex;align-items:center;gap:9px}.section-title:before{content:"";width:4px;height:18px;border-radius:5px;background:var(--cyan)}
+label{display:block;font-size:12px;color:#b3c1dc;margin:14px 0 7px}input,select{width:100%;background:#0a1222;border:1px solid #30415f;color:var(--text);border-radius:10px;padding:12px 13px;font-size:14px;outline:none}input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px #68a7ff18}
+.btnrow{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}.btn{border:0;border-radius:10px;padding:11px 14px;font-weight:800;cursor:pointer;font-size:13px;transition:transform .15s,opacity .15s}.btn:hover{transform:translateY(-1px)}.primary{background:linear-gradient(135deg,var(--blue),#8ac6ff);color:#071326}.secondary{background:#24324d;color:#dce8ff;border:1px solid #344767}.danger{background:#3a2031;color:#ffb4c4;border:1px solid #69324b}.success{background:#143a3a;color:#91fff0;border:1px solid #24615d}
+.note{margin-top:17px;padding:12px;border-radius:12px;background:#0b1528;border:1px solid #263957;color:var(--muted);font-size:12px;line-height:1.55}.note b{color:var(--cyan)}
+.visual-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.legend{display:flex;gap:12px;color:var(--muted);font-size:11px}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px}.queue-stage{min-height:235px;border:1px dashed #344765;background:linear-gradient(180deg,#0b1426,#0e172a);border-radius:16px;padding:22px 16px;margin-top:14px;overflow-x:auto}
+.pointer-row{display:flex;justify-content:space-between;min-width:400px;margin-bottom:13px;color:var(--muted);font-size:11px;font-weight:800;letter-spacing:1px}.pointer{color:var(--cyan)}.nodes{display:flex;align-items:center;gap:0;min-width:max-content;padding:14px 6px 20px}.empty{color:#8192b4;text-align:center;padding:42px 10px;font-size:14px}
+.node-wrap{display:flex;align-items:center;animation:pop .28s ease-out}.node{width:100px;border:1px solid #41638c;border-radius:12px;overflow:hidden;background:#152640;box-shadow:0 8px 20px #0002}.node.front{border-color:var(--cyan);box-shadow:0 0 0 2px #51e0d022}.node .value{padding:13px 8px;text-align:center;font-size:20px;font-weight:900;background:#1b3151}.node .next{padding:9px 8px;text-align:center;font-size:10px;color:#a7bad8;border-top:1px solid #314966}.arrow{font-size:22px;color:var(--blue);padding:0 9px}.null{color:var(--pink);font-size:11px;font-weight:800;padding-left:8px}
+.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.meta-card{background:#0b1425;border:1px solid #263653;border-radius:12px;padding:12px}.meta-card span{display:block;font-size:11px;color:var(--muted);margin-bottom:5px}.meta-card strong{font-size:13px}
+.log{margin-top:18px}.loglist{max-height:150px;overflow:auto;display:flex;flex-direction:column;gap:7px}.logitem{padding:9px 11px;border-radius:9px;background:#0b1425;color:#aebfdb;font-size:12px;border-left:3px solid #365c86}.logitem b{color:#eaf2ff}
+.explain{margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.explain article{padding:15px;background:#0b1425;border:1px solid #263653;border-radius:13px}.explain h3{font-size:13px;margin:0 0 7px}.explain p{font-size:12px;line-height:1.5;color:var(--muted);margin:0}.complexity{color:var(--yellow);font-weight:800}
+.toast{min-height:18px;color:var(--cyan);font-size:12px;margin-top:10px}
+@keyframes pop{from{opacity:0;transform:translateY(7px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:850px){.hero,.main{grid-template-columns:1fr}.stats{min-height:100px}.explain{grid-template-columns:1fr}.panel{padding:18px}.wrap{padding:18px 12px 28px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="brand"><div class="logo">↔</div><div><h1>Linked List Queue</h1><p class="subtitle">Interactive printer queue visualizer · Data Structures Lab</p></div></div>
+  <div class="pill">FIFO · LINKED LIST IMPLEMENTATION</div>
+</header>
+<section class="hero">
+  <div class="panel"><div class="kicker">Learn by doing</div><h2>See every node. Follow every pointer.</h2><p>Submit print jobs to add nodes at the rear, then print the next job to remove the front node. The visual links show how a queue works without a fixed-size array.</p></div>
+  <div class="stats">
+    <div class="stat"><span>Jobs waiting</span><strong id="statCount">0</strong></div>
+    <div class="stat"><span>Printed</span><strong id="statPrinted">0</strong></div>
+    <div class="stat"><span>Pages waiting</span><strong id="statPages">0</strong></div>
+  </div>
+</section>
+<div class="main">
+  <aside class="panel">
+    <h2 class="section-title">Add a print job</h2>
+    <label for="jobName">Document name</label><input id="jobName" placeholder="e.g. Assignment.pdf" maxlength="28" value="Assignment.pdf">
+    <label for="pages">Number of pages</label><input id="pages" type="number" min="1" max="500" value="5">
+    <label for="printType">Print mode</label><select id="printType"><option value="Black & white">Black & white</option><option value="Colour">Colour</option></select>
+    <div class="btnrow"><button class="btn primary" id="enqueue">＋ Enqueue job</button><button class="btn secondary" id="sample">Load example</button></div>
+    <div class="btnrow"><button class="btn success" id="dequeue">▶ Print next job</button><button class="btn danger" id="clear">Clear queue</button></div>
+    <div class="toast" id="toast" role="status">Ready. Add a job to begin.</div>
+    <div class="note"><b>Linked list rule:</b> each node stores a print job and a <code>next</code> pointer. <code>FRONT</code> points to the first job; <code>REAR</code> points to the newest job.</div>
+  </aside>
+  <main class="panel">
+    <div class="visual-head"><h2 class="section-title" style="margin:0">Queue memory view</h2><div class="legend"><span><i class="dot" style="background:var(--cyan)"></i>Front node</span><span><i class="dot" style="background:var(--blue)"></i>Next link</span></div></div>
+    <div class="queue-stage">
+      <div class="pointer-row"><span class="pointer" id="frontLabel">FRONT → NULL</span><span class="pointer" id="rearLabel">REAR → NULL</span></div>
+      <div class="nodes" id="nodes"><div class="empty">Queue is empty. Enqueue a print job to create the first node.</div></div>
+    </div>
+    <div class="meta">
+      <div class="meta-card"><span>FRONT / head</span><strong id="frontValue">NULL</strong></div>
+      <div class="meta-card"><span>REAR / tail</span><strong id="rearValue">NULL</strong></div>
+      <div class="meta-card"><span>Queue status</span><strong id="status">Empty</strong></div>
+    </div>
+    <div class="log"><h2 class="section-title">Activity log</h2><div class="loglist" id="log"><div class="logitem">Waiting for your first operation…</div></div></div>
+  </main>
+</div>
+<section class="explain">
+  <article><h3>01 · Enqueue <span class="complexity">O(1)</span></h3><p>Create a node and attach it after REAR. Then move REAR to the new node. If the queue was empty, FRONT and REAR both point to it.</p></article>
+  <article><h3>02 · Dequeue <span class="complexity">O(1)</span></h3><p>Remove the node at FRONT and move FRONT to its next node. If the queue becomes empty, set REAR to NULL too.</p></article>
+  <article><h3>03 · FIFO order</h3><p>First In, First Out: the oldest submitted print job is always the next one printed. The linked list grows as jobs are added.</p></article>
+</section>
+</div>
+<script>
+const queue=[]; let nextId=1, printed=0, logs=[];
+const $=id=>document.getElementById(id);
+function addLog(message){logs.unshift(message);logs=logs.slice(0,12);$('log').innerHTML=logs.map(x=>`<div class="logitem">${x}</div>`).join('');}
+function render(){
+  $('statCount').textContent=queue.length;
+  $('statPrinted').textContent=printed;
+  $('statPages').textContent=queue.reduce((sum,j)=>sum+j.pages,0);
+  $('frontLabel').textContent=queue.length?`FRONT → NODE ${queue[0].id}`:'FRONT → NULL';
+  $('rearLabel').textContent=queue.length?`REAR → NODE ${queue[queue.length-1].id}`:'REAR → NULL';
+  $('frontValue').textContent=queue.length?queue[0].name:'NULL';
+  $('rearValue').textContent=queue.length?queue[queue.length-1].name:'NULL';
+  $('status').textContent=queue.length?'Active':'Empty';
+  if(!queue.length){$('nodes').innerHTML='<div class="empty">Queue is empty. Enqueue a print job to create the first node.</div>';return;}
+  $('nodes').innerHTML=queue.map((j,i)=>`<div class="node-wrap"><div class="node ${i===0?'front':''}"><div class="value">${escapeHtml(j.name.length>13?j.name.slice(0,11)+'…':j.name)}</div><div class="next">ID ${j.id} · ${j.pages} page${j.pages===1?'':'s'}<br>next: ${i===queue.length-1?'NULL':'NODE '+queue[i+1].id}</div></div>${i<queue.length-1?'<div class="arrow">⟶</div>':'<div class="null">NULL</div>'}</div>`).join('');
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function enqueueJob(name,pages,mode){
+  if(queue.length>=12){$('toast').textContent='Demo limit reached (12 nodes). Print a job or clear the queue.';return;}
+  const job={id:nextId++,name:name.trim()||'Untitled.pdf',pages:Math.max(1,Math.min(500,Number(pages)||1)),mode};
+  queue.push(job);
+  addLog(`<b>ENQUEUE</b> · ${escapeHtml(job.name)} added at REAR (node ${job.id}).`);
+  $('toast').textContent=`Added ${job.name} to the rear of the queue.`;
+  render();
+}
+$('enqueue').addEventListener('click',()=>enqueueJob($('jobName').value,$('pages').value,$('printType').value));
+$('dequeue').addEventListener('click',()=>{
+  if(!queue.length){$('toast').textContent='Queue underflow: there are no jobs to print.';return;}
+  const job=queue.shift();printed++;
+  addLog(`<b>DEQUEUE / PRINT</b> · ${escapeHtml(job.name)} (${job.pages} page${job.pages===1?'':'s'}, ${job.mode}) removed from FRONT.`);
+  $('toast').textContent=`Printing complete: ${job.name}.`;
+  render();
+});
+$('clear').addEventListener('click',()=>{const count=queue.length;queue.length=0;addLog(`<b>CLEAR</b> · Removed ${count} waiting job${count===1?'':'s'}.`);$('toast').textContent='Queue cleared.';render();});
+$('sample').addEventListener('click',()=>{
+  if(queue.length){$('toast').textContent='Print or clear the current jobs before loading the example.';return;}
+  enqueueJob('DSA_Assignment.pdf',5,'Black & white');
+  enqueueJob('Lab_Record.docx',12,'Black & white');
+  enqueueJob('Project_PPT.pptx',8,'Colour');
+});
+render();
+</script>
+</body>
+</html>
